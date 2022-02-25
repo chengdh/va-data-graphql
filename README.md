@@ -1,6 +1,6 @@
-# ra-data-graphql
+# va-data-graphql
 
-A GraphQL data provider for [react-admin](https://github.com/marmelab/react-admin/)
+A GraphQL data provider for [vuetify-admin](https://github.com/okami101/vuetify-admin)
 built with [Apollo](http://www.apollodata.com/)
 
 - [Installation](#installation)
@@ -9,7 +9,6 @@ built with [Apollo](http://www.apollodata.com/)
 
 This is a very low level library which is not meant to be used directly unless you really want full control or are building a custom GraphQL data provider.
 
-It provides the foundations for other GraphQL data provider packages such as `ra-data-graphcool` or `ra-data-graphql-simple`
 
 ## About GraphQL and Apollo
 
@@ -18,28 +17,28 @@ you're free to use any graphql **server**.
 
 ## How does it work?
 
-In a nutshell, `ra-data-graphql` runs an *introspection query* on your GraphQL API and passes it to your adaptator, along with the *type of query* that is being made (`CREATE`, `UPDATE`, `GET_ONE`, `GET_LIST` etc..) and the *name of the resource* that is being queried.
+In a nutshell, `va-data-graphql` runs an *introspection query* on your GraphQL API and passes it to your adaptator, along with the *type of query* that is being made (`CREATE`, `UPDATE`, `GET_ONE`, `GET_LIST` etc..) and the *name of the resource* that is being queried.
 
 It is then the job of ***your*** GraphQL adaptator to craft the GraphQL query that will match your backend conventions, and to provide a function that will parse the response of that query in a way that react-admin can understand.
 
-Once the query and the function are passed back to `ra-data-graphql`, the actual HTTP request is sent (using [ApolloClient](https://github.com/apollographql/apollo-client)) to your GraphQL API. The response from your backend is then parsed with the provided function and that parsed response is given to `ra-core`, the core of `react-admin`.
+Once the query and the function are passed back to `va-data-graphql`, the actual HTTP request is sent (using [ApolloClient](https://github.com/apollographql/apollo-client)) to your GraphQL API. The response from your backend is then parsed with the provided function and that parsed response is given to `ra-core`, the core of `react-admin`.
 
 Below is a rough graph summarizing how the data flows:
 
-`ra-core` => `ra-data-graphql` => `your-adaptator` => `ra-data-graphql` => `ra-core`
+`va-core` => `va-data-graphql` => `your-adaptator` => `va-data-graphql` => `va-core`
 
 ## Installation
 
 Install with:
 
 ```sh
-npm install --save graphql ra-data-graphql
+npm install --save graphql va-data-graphql
 ```
 
 or
 
 ```sh
-yarn add graphql ra-data-graphql
+yarn add graphql va-data-graphql
 ```
 
 ## Usage
