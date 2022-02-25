@@ -1,6 +1,6 @@
 version: '3'
 services:
-  hw-app:
+  va-data-graphql:
     build: .
     # command: "npm ren serve"
     volumes:
