@@ -9,7 +9,7 @@ import {
     CREATE,
     UPDATE,
     DELETE,
-} from 'ra-core';
+} from './actions';
 
 import buildApolloClient from './buildApolloClient';
 import {
