@@ -1,27 +1,24 @@
 {
-    "name": "ra-data-graphql",
-    "version": "2.9.6",
-    "description": "A GraphQL data provider for react-admin",
+    "name": "va-data-graphql",
+    "version": "0.1.0",
+    "description": "A GraphQL data provider for vuetify-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
     "sideEffects": false,
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/marmelab/react-admin.git"
+        "url": "git+https://https://github.com/chengdh/va-data-graphql"
     },
     "bugs": {
-        "url": "https://github.com/marmelab/react-admin/issues"
+        "url": "https://github.com/chengdh/va-data-graphql/issues"
     },
-    "homepage": "https://github.com/marmelab/react-admin#readme",
+    "homepage": "https://github.com/chengdh/va-data-graphql/#readme",
     "authors": [
-        "Gildas Garcia"
+        "chengdh"
     ],
     "keywords": [
-        "reactjs",
-        "react",
-        "react-admin",
-        "admin-on-rest",
-        "rest",
+        "vuejs",
+        "vuetify-admin",
         "graphql"
     ],
     "license": "MIT",
@@ -39,8 +36,7 @@
         "pluralize": "~7.0.0"
     },
     "peerDependencies": {
-        "graphql": "^0.13.2",
-        "ra-core": "^2.5.0"
+        "graphql": "^0.13.2"
     },
     "devDependencies": {
         "cross-env": "^5.2.0",
