@@ -1,5 +1,7 @@
-import resolveIntrospection, {
-    filterTypesByIncludeExclude,
+import {
+    introspectSchema,
+    isResourceExcluded,
+    isResourceIncluded,
 } from './introspection';
 import {
     GET_LIST,
@@ -9,68 +11,130 @@ import {
     CREATE,
     UPDATE,
     DELETE,
-} from './actions';
+} from 'ra-core';
 
 describe('introspection', () => {
-    describe('filterTypesByIncludeExclude', () => {
+    describe('isResourceIncluded', () => {
         it('return false with an include option containing an array and tested type is not in it', () => {
             expect(
-                filterTypesByIncludeExclude({ include: ['Post', 'Comment'] })({
-                    name: 'NotMe',
-                })
+                isResourceIncluded(
+                    {
+                        name: 'NotMe',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    {
+                        include: ['Post', 'Comment'],
+                    }
+                )
             ).toBe(false);
         });
 
         it('return true with an include option containing an array and tested type is in it', () => {
             expect(
-                filterTypesByIncludeExclude({ include: ['Post', 'Comment'] })({
-                    name: 'Post',
-                })
+                isResourceIncluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    {
+                        include: ['Post', 'Comment'],
+                    }
+                )
             ).toBe(true);
         });
 
-        it('return false with an exclude option containing an array and tested type is in it', () => {
+        it('return false with an include option containing an array and tested type is not in it', () => {
             expect(
-                filterTypesByIncludeExclude({ exclude: ['NotMe'] })({
-                    name: 'NotMe',
-                })
+                isResourceIncluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    {
+                        include: ['NotMe'],
+                    }
+                )
             ).toBe(false);
         });
 
-        it('return true with an include option containing an array and tested type is not in it', () => {
+        it('return true with an include option being a function returning true', () => {
             expect(
-                filterTypesByIncludeExclude({ exclude: ['NotMe'] })({
-                    name: 'Post',
-                })
+                isResourceIncluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    { include: () => true }
+                )
             ).toBe(true);
         });
 
-        it('return true with an include option being a function returning true', () => {
-            const include = jest.fn(() => true);
-            const type = { name: 'Post' };
-            expect(filterTypesByIncludeExclude({ include })(type)).toBe(true);
-            expect(include).toHaveBeenCalledWith(type);
-        });
-
         it('return false with an include option being a function returning false', () => {
-            const include = jest.fn(() => false);
-            const type = { name: 'Post' };
-            expect(filterTypesByIncludeExclude({ include })(type)).toBe(false);
-            expect(include).toHaveBeenCalledWith(type);
+            expect(
+                isResourceIncluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    { include: () => false }
+                )
+            ).toBe(false);
+        });
+    });
+
+    describe('isResourceExcluded', () => {
+        it('return true with an exclude option containing an array and tested type is in it', () => {
+            expect(
+                isResourceExcluded(
+                    {
+                        name: 'NotMe',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    {
+                        exclude: ['NotMe'],
+                    }
+                )
+            ).toBe(true);
         });
 
-        it('return false with an exclude option being a function returning true', () => {
-            const exclude = jest.fn(() => true);
-            const type = { name: 'Post' };
-            expect(filterTypesByIncludeExclude({ exclude })(type)).toBe(false);
-            expect(exclude).toHaveBeenCalledWith(type);
+        it('return true with an exclude option being a function returning true', () => {
+            expect(
+                isResourceExcluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    { exclude: () => true }
+                )
+            ).toBe(true);
         });
 
-        it('return true with an exclude option being a function returning false', () => {
-            const exclude = jest.fn(() => false);
-            const type = { name: 'Post' };
-            expect(filterTypesByIncludeExclude({ exclude })(type)).toBe(true);
-            expect(exclude).toHaveBeenCalledWith(type);
+        it('return false with an exclude option being a function returning false', () => {
+            expect(
+                isResourceExcluded(
+                    {
+                        name: 'Post',
+                        kind: 'OBJECT',
+                        fields: [],
+                        interfaces: [],
+                    },
+                    { exclude: () => false }
+                )
+            ).toBe(false);
         });
     });
 
@@ -114,7 +178,8 @@ describe('introspection', () => {
             ),
         };
 
-        const introspectionResultsPromise = resolveIntrospection(client, {
+        // @ts-ignore
+        const introspectionResultsPromise = introspectSchema(client, {
             operationNames: {
                 [GET_LIST]: resource => `all${resource.name}`,
                 [GET_ONE]: resource => `${resource.name}`,
@@ -167,6 +232,12 @@ describe('introspection', () => {
                     [GET_ONE]: { name: 'Comment' },
                     [GET_MANY]: { name: 'allComment' },
                     [GET_MANY_REFERENCE]: { name: 'allComment' },
+                },
+                {
+                    type: { name: 'IHavePartialCrud' },
+                    [CREATE]: { name: 'createIHavePartialCrud' },
+                    [UPDATE]: { name: 'updateIHavePartialCrud' },
+                    [DELETE]: { name: 'deleteIHavePartialCrud' },
                 },
             ]);
         });
