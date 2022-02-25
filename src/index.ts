@@ -13,7 +13,7 @@ import {
     DELETE,
     DELETE_MANY,
     UPDATE_MANY,
-} from 'ra-core';
+} from './actions';
 import {
     ApolloClient,
     ApolloClientOptions,
