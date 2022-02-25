@@ -1,4 +1,4 @@
-**
+/**
  * Supported data actions
  */
  export const GET_LIST = "getList";
