@@ -10,7 +10,7 @@ import {
     CREATE,
     UPDATE,
     DELETE,
-} from 'ra-core';
+} from './actions';
 
 describe('introspection', () => {
     describe('isResourceIncluded', () => {
