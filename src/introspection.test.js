@@ -1,5 +1,4 @@
-import {
-    introspectSchema,
+import resolveIntrospection, {
     isResourceExcluded,
     isResourceIncluded,
 } from './introspection';
@@ -11,130 +10,82 @@ import {
     CREATE,
     UPDATE,
     DELETE,
-} from './actions';
+} from 'ra-core';
 
 describe('introspection', () => {
     describe('isResourceIncluded', () => {
         it('return false with an include option containing an array and tested type is not in it', () => {
             expect(
-                isResourceIncluded(
-                    {
+                isResourceIncluded({
+                    include: ['Post', 'Comment'],
+                    type: {
                         name: 'NotMe',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
                     },
-                    {
-                        include: ['Post', 'Comment'],
-                    }
-                )
+                })
             ).toBe(false);
         });
 
         it('return true with an include option containing an array and tested type is in it', () => {
             expect(
-                isResourceIncluded(
-                    {
+                isResourceIncluded({
+                    include: ['Post', 'Comment'],
+                    type: {
                         name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
                     },
-                    {
-                        include: ['Post', 'Comment'],
-                    }
-                )
+                })
             ).toBe(true);
         });
 
         it('return false with an include option containing an array and tested type is not in it', () => {
             expect(
-                isResourceIncluded(
-                    {
+                isResourceIncluded({
+                    include: ['NotMe'],
+                    type: {
                         name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
                     },
-                    {
-                        include: ['NotMe'],
-                    }
-                )
+                })
             ).toBe(false);
         });
 
         it('return true with an include option being a function returning true', () => {
-            expect(
-                isResourceIncluded(
-                    {
-                        name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
-                    },
-                    { include: () => true }
-                )
-            ).toBe(true);
+            const include = jest.fn(() => true);
+            const type = { name: 'Post' };
+            expect(isResourceIncluded({ include, type })).toBe(true);
+            expect(include).toHaveBeenCalledWith(type);
         });
 
         it('return false with an include option being a function returning false', () => {
-            expect(
-                isResourceIncluded(
-                    {
-                        name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
-                    },
-                    { include: () => false }
-                )
-            ).toBe(false);
+            const include = jest.fn(() => false);
+            const type = { name: 'Post' };
+            expect(isResourceIncluded({ include, type })).toBe(false);
+            expect(include).toHaveBeenCalledWith(type);
         });
     });
 
     describe('isResourceExcluded', () => {
         it('return true with an exclude option containing an array and tested type is in it', () => {
             expect(
-                isResourceExcluded(
-                    {
+                isResourceExcluded({
+                    exclude: ['NotMe'],
+                    type: {
                         name: 'NotMe',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
                     },
-                    {
-                        exclude: ['NotMe'],
-                    }
-                )
+                })
             ).toBe(true);
         });
 
         it('return true with an exclude option being a function returning true', () => {
-            expect(
-                isResourceExcluded(
-                    {
-                        name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
-                    },
-                    { exclude: () => true }
-                )
-            ).toBe(true);
+            const exclude = jest.fn(() => true);
+            const type = { name: 'Post' };
+            expect(isResourceExcluded({ exclude, type })).toBe(true);
+            expect(exclude).toHaveBeenCalledWith(type);
         });
 
         it('return false with an exclude option being a function returning false', () => {
-            expect(
-                isResourceExcluded(
-                    {
-                        name: 'Post',
-                        kind: 'OBJECT',
-                        fields: [],
-                        interfaces: [],
-                    },
-                    { exclude: () => false }
-                )
-            ).toBe(false);
+            const exclude = jest.fn(() => false);
+            const type = { name: 'Post' };
+            expect(isResourceExcluded({ exclude, type })).toBe(false);
+            expect(exclude).toHaveBeenCalledWith(type);
         });
     });
 
@@ -178,8 +129,7 @@ describe('introspection', () => {
             ),
         };
 
-        // @ts-ignore
-        const introspectionResultsPromise = introspectSchema(client, {
+        const introspectionResultsPromise = resolveIntrospection(client, {
             operationNames: {
                 [GET_LIST]: resource => `all${resource.name}`,
                 [GET_ONE]: resource => `${resource.name}`,
@@ -232,12 +182,6 @@ describe('introspection', () => {
                     [GET_ONE]: { name: 'Comment' },
                     [GET_MANY]: { name: 'allComment' },
                     [GET_MANY_REFERENCE]: { name: 'allComment' },
-                },
-                {
-                    type: { name: 'IHavePartialCrud' },
-                    [CREATE]: { name: 'createIHavePartialCrud' },
-                    [UPDATE]: { name: 'updateIHavePartialCrud' },
-                    [DELETE]: { name: 'deleteIHavePartialCrud' },
                 },
             ]);
         });
