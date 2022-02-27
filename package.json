@@ -1,6 +1,6 @@
 {
     "name": "vuetify-admin-data-graphql",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "A GraphQL data provider for vuetify-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
@@ -14,7 +14,7 @@
     },
     "homepage": "https://github.com/chengdh/va-data-graphql#readme",
     "authors": [
-        "Gildas Garcia"
+        "rabbit chengh"
     ],
     "keywords": [
         "vuejs",
@@ -29,18 +29,17 @@
         "watch": "tsc --outDir esm --module es2015 --watch"
     },
     "dependencies": {
-        "apollo-client": "^2.6.3",
-        "apollo-client-preset": "^1.0.8",
-        "graphql-tag": "^2.10.1",
+        "@apollo/client": "^3.3.19",
         "lodash": "~4.17.5",
         "pluralize": "~7.0.0"
     },
     "peerDependencies": {
-        "graphql": "^14.1.1"
+        "graphql": "^15.6.0"
     },
     "devDependencies": {
+        "@types/node": "^17.0.21",
         "cross-env": "^5.2.0",
-        "graphql": "^14.1.1",
+        "graphql": "^15.6.0",
         "rimraf": "^2.6.3"
     }
 }

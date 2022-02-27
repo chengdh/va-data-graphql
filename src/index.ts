@@ -2,8 +2,6 @@ import merge from 'lodash/merge';
 import get from 'lodash/get';
 import pluralize from 'pluralize';
 import {
-    DataProvider,
-    HttpError,
     GET_LIST,
     GET_ONE,
     GET_MANY,
@@ -13,7 +11,7 @@ import {
     DELETE,
     DELETE_MANY,
     UPDATE_MANY,
-} from 'ra-core';
+} from './actions';
 import {
     ApolloClient,
     ApolloClientOptions,
@@ -125,7 +123,7 @@ export type Options = {
     watchQuery?: GetWatchQueryOptions;
 };
 
-export default async (options: Options): Promise<DataProvider> => {
+export default async (options: Options): Promise<any> => {
     const {
         client: clientObject,
         clientOptions,
@@ -147,7 +145,7 @@ export default async (options: Options): Promise<DataProvider> => {
 
     let introspectionResults;
 
-    const raDataProvider = new Proxy<DataProvider>(defaultDataProvider, {
+    const raDataProvider = new Proxy<any>(defaultDataProvider, {
         get: (target, name) => {
             if (typeof name === 'symbol' || name === 'then') {
                 return;
@@ -167,7 +165,7 @@ export default async (options: Options): Promise<DataProvider> => {
                     `${resource}.${raFetchMethod}`
                 );
 
-                const { parseResponse, ...query } = overriddenBuildQuery
+                const { parseResponse = {}, ...query } = overriddenBuildQuery as any
                     ? {
                           ...buildQuery(raFetchMethod, resource, params),
                           ...overriddenBuildQuery(params),
@@ -222,13 +220,12 @@ export default async (options: Options): Promise<DataProvider> => {
 
 const handleError = (error: ApolloError) => {
     if (error?.networkError as ServerError) {
-        throw new HttpError(
+        throw new Error(
             (error?.networkError as ServerError)?.message,
-            (error?.networkError as ServerError)?.statusCode
         );
     }
 
-    throw new HttpError(error.message, 200, error);
+    throw new Error(error.message);
 };
 
 const getQueryOperation = query => {
