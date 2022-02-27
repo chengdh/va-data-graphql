@@ -1,6 +1,6 @@
 {
-    "name": "va-data-graphql",
-    "version": "0.1.0",
+    "name": "vuetify-admin-data-graphql",
+    "version": "0.2.0",
     "description": "A GraphQL data provider for vuetify-admin",
     "main": "lib/index.js",
     "module": "esm/index.js",
