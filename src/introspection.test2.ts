@@ -12,7 +12,6 @@ import {
     UPDATE,
     DELETE,
 } from './actions';
-
 describe('introspection', () => {
     describe('isResourceIncluded', () => {
         it('return false with an include option containing an array and tested type is not in it', () => {
